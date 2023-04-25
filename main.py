@@ -25,8 +25,6 @@ player_w, player_h = 60, 60
 player_rect = pygame.Rect(100, 100, player_w, player_h)
 velocity = 4
 red_vel = 1
-goal_rect = pygame.Rect(870, 200, 30, 100)
-win_lvl = 6
 
 NEXT_LVL = pygame.USEREVENT + 1
 WIN = pygame.USEREVENT + 2
@@ -42,6 +40,7 @@ trick_sound = mixer.Sound('src/trick.wav')
 def game():
     global player_rect
     stage = 'title'
+    goal_rect = pygame.Rect(870, 200, 30, 100)
     lvl = 0
     reds = []
     tricked = False
@@ -81,8 +80,6 @@ def game():
                         reds = [(200, 10), (200, 80), (200, 150), (200, 220), (200, 342), (200, 410), (200, 480),
                                 (400, 10), (400, 130), (400, 200), (400, 270), (400, 340), (400, 410), (400, 480),
                                 (470, 130), (470, 10), (590, 70)]
-                    elif lvl >= win_lvl:
-                        pygame.event.post(pygame.event.Event(WIN))
                 if e.type == WIN:
                     win_sound.play()
                     stage = 'win'
@@ -118,17 +115,19 @@ def game():
 
             if player_rect.colliderect(goal_rect):
                 sleep(0.5)
-                if lvl != 5:
+                if lvl > 0 and lvl != 5:
                     pygame.event.post(pygame.event.Event(NEXT_LVL))
-                else:
+                elif lvl == 5:
                     if tricked is False:
                         goal_rect.x = 0
                         tricked = True
                         pygame.event.post(pygame.event.Event(TRICK))
                     else:
-                        pygame.event.post(pygame.event.Event(NEXT_LVL))
+                        pygame.event.post(pygame.event.Event(WIN))
             for red in reds:
                 if player_rect.colliderect(pygame.Rect(red[0], red[1], 60, 60)):
+                    lvl = 0
+                    tricked = False
                     pygame.event.post(pygame.event.Event(LOSE))
 
         elif stage == 'win':
