@@ -92,6 +92,11 @@ def game():
                 if e.type == TRICK:
                     trick_sound.play()
 
+            elif stage == 'lose':
+                if e.type == pygame.KEYDOWN:
+                    if e.key == pygame.K_RETURN:
+                        game()
+
         scrn.fill(c_bg)
 
         if stage == 'title':
@@ -133,6 +138,7 @@ def game():
         elif stage == 'lose':
             scrn.fill((255, 0, 0))
             scrn.blit(title_font.render('Red has Taken Over!', True, (0, 0, 0)), (width / 5, height / 4))
+            scrn.blit(instruct_font.render('Enter to replay.', True, (0, 0, 0)), (width / 2 - 100, height / 2 + 50))
 
         pygame.display.update()
         clock.tick(fps)
